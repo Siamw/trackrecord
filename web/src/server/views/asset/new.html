@@ -1,0 +1,114 @@
+{% extends "shared/base.html" %} {% block title %}Upload Photo{% endblock %} {% block content %}
+
+<body>
+	{% include "shared/navbar.html" %}
+	<style>
+		.inputfile {
+			width: 0.1px;
+			height: 0.1px;
+			opacity: 0;
+			overflow: hidden;
+			position: absolute;
+			z-index: -1;
+		}
+		#upload_img{
+			width:200px;
+			min-height:100px;
+			position:relative;
+			display:block;
+			margin:auto;
+		}
+		#upload_img:hover .upload_description{
+			display:block;
+		}
+
+		#upload_img .upload-icon{
+			color:#FFF;
+			font-size:180px;
+			margin:8px;
+		}
+		#upload_img .upload_description{
+			position:absolute;
+			top:0px;
+			height:100%;
+			width:100%;
+			padding-top:75px;
+			border:solid 2px #00AEEF;
+			background:rgba(0,0,0,0.6); 
+			color:white;
+			display:none;
+		}
+
+		
+	</style>
+
+	<section>
+		<div class="container">
+
+			<div class="main-center"  style='text-align:center'>
+				<h2 id="title">{{pageTitle}}</h2>
+				<p id="description">{{pageDescription}}</p>
+				<form id="upload_form" method="post">
+					<input type="file" name="File" id="file" class="inputfile">
+					<label for="file" id="upload_img">
+							<div class="upload_description">Select a photo</div>
+							<i class="fa fa-user-circle-o upload-icon" aria-hidden="true"> </i>
+							<img id='img-upload' src="" />
+							
+					</label>
+				</form>
+				<p>Click image to select image</p>
+					
+				
+			</div>
+
+		</div>
+	</section>
+
+	<script>
+		$(document).ready(function () {
+			function readURL(input) {
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						$('#img-upload').attr('src', e.target.result);
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+
+			$('#file').on('change', function (e) {
+				//readURL(this);
+				$("#upload_form").trigger("submit");
+			});
+		});
+
+		$("#upload_form").submit(function (e) {
+			e.preventDefault();
+			waitingDialog.show('Uploading image...');
+			$.ajax({
+				type: "POST",
+				contentType: false,
+				url: "/api/asset?type=logo",
+				data: new FormData(this),
+				processData: false,
+				dataType: 'json',
+				success: function (res) {
+					waitingDialog.hide();
+					if(res.data && res.data.redirectUrl)
+						location.href = res.data.redirectUrl;
+					else
+						location.href = '/';
+				},
+				error: function (err) {
+					waitingDialog.hide();
+					alert(err.responseJSON.message)
+				}
+			});
+		})
+	</script>
+	{% include "shared/footer.html" %}
+</body>
+
+
+{% endblock %}

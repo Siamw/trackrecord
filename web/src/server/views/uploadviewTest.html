@@ -1,0 +1,86 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Photo Test{% endblock %}
+
+{% block content %}
+
+<body>
+    {% include "shared/navbar.html" %}
+    <style>
+        .inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
+    
+    <section>
+    <div class="container">
+        <div align="center">
+
+        <span id="title">Title : </span>
+        <span id="description">description!</span>
+        </div><br>
+
+        <div class="col-lg-6 offset-lg-3">
+        <div class="box" align="center">
+            <form id="upload_form" method="post">
+                <button id="finish" type="submit" class="btn btn-default"> Save! </button>
+                <input type="file" name="File" id="file" class="inputfile"><br>
+            </form>
+            <label for="file">
+                    <img id='img-upload' src="https://www.gstatic.com/webp/gallery3/1.sm.png"/><br>
+                <span></span>
+            </label>
+            
+        </div>
+        <div align="center">Click image to upload image</div>
+        </div>
+    </div>
+    </section>
+
+    <script>
+        $(document).ready(function(){
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#img-upload').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $('#file').on('change', function(e) {
+                readURL(this);
+                //$("#upload_form").trigger("submit");
+            });
+        });
+
+        $("#upload_form").submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                contentType: false,
+                url: "http://localhost:3000/api/asset?type=logo",
+                data: new FormData(this),
+                processData : false,
+                dataType : 'json',
+                success: function(res){
+                    console.log('success!');
+                    alert('Success!');
+                },
+                error: function(err){
+                    alert(err.responseJSON.message)
+                }
+            });
+        })
+    </script>
+    {% include "shared/footer.html" %}
+ </body>
+
+
+{% endblock %}

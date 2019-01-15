@@ -1,0 +1,39 @@
+
+
+{% extends "shared/base.html" %} {% block title %}{% endblock %} 
+
+{% block content %}
+
+<body id="page-top">
+        {% include "shared/navbar.html" %}
+
+        <section>
+        
+            <!-- Container-->
+            <div id="home" class="container text-center">
+                <h3>Track Record Admin Page</h3>
+                <p><em>Manage Venue and Artist</em>
+                </p>
+                <br>
+                <div id="lists">
+                    <a href="/venues">
+                        <i style="color:primary" class="fa fa-bars fa-2x"></i><span class="label label-info tags"> venue list</span>
+                    </a>
+                    <a href="/artists">
+                        <i style="color:primary" class="fa fa-bars fa-2x"></i><span class="label label-info tags"> artist list</span>
+                    </a>
+                </div>
+                    <br>
+                <div id="add">
+                    <a href="/venue/step1">
+                        <i style="color:primary" class="fa  fa-plus fa-2x"></i><span class="label label-info tags"> add venue</span>
+                    </a>
+                    <a href="/artist/step1">
+                        <i style="color:primary" class="fa  fa-plus fa-2x"></i><span class="label label-info tags"> add artist</span>
+                    </a>
+                </div> 
+             </div>
+        </section>
+ </body>
+
+{% endblock %}

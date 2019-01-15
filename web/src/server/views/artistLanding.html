@@ -1,0 +1,65 @@
+ {% extends "shared/base.html" %} {% block title %}Main{% endblock %} {% block content %}
+
+<body id="page-top">
+	{% include "shared/navbar.html" %}
+
+
+
+	<header class="masthead">
+		<div class="container">
+			<div class="intro-text" style="text-align:center">
+				<div class="intro-lead-in text-uppercase">For Artists</div>
+				<div class="intro-heading text-uppercase">WE'LL SHOWCASE YOUR TALENT IN FRONT OF VENUES & EVENT PLANNERS.
+					</div>
+				<div class="intro-desc" style="max-width:600px;text-align:center;margin:auto;margin-bottom:40px;">Serving Los Angeles and Orange County
+				</div>
+				<a class="btn btn-primary btn-xl text-uppercase " href="/signup/artist">Sign Up</a>
+			</div>
+		</div>
+	</header>
+	<section style="background-color:#191B1C">
+		<div class="container">
+			<div class="row" style="margin-bottom:80px">
+				<div class="col-md-2">
+
+				</div>
+				<div class="col-md-8 text-center">
+					<h2 class="section-heading" style="color: #FFFFFF">Your Music is Amazing</h2>
+					<p class="text-muted">But every upcoming independent artist needs a more efficient way of finding and booking venues. TrackRecord is here to connect you with the best live music for you.
+						</p>
+						<br/>
+					<a href="/signup/artist" class="btn btn-primary btn-xl text-uppercase">Sign Up</a>
+				</div>
+				<div class="col-md-2">
+
+				</div>
+			</div>
+			<div class="row">
+					<h2 style="margin: auto; margin-bottom:48px;margin-top:48px">How it Works?</h2>
+			</div>
+			<div class="row" style="margin-bottom:48px">
+			{% for step in info.howToSteps %}				
+				<div class="col-md-3">
+					<div class="howToStep">
+						<img src="{{step.imagePath}}"/>
+						<h5 class="howToStep-title">{{ step.title }}</h5>
+						<ul class="list-unstyled howToStep-reasons">
+							{% for reason in step.reasons %}	
+							<li>{{ reason }}</li>
+							{%endfor%}
+						</ul>
+
+					</div>
+				</div>
+			{%endfor%}
+
+			</div>
+			<div class="row" style="text-align:center">
+					<a href="/signup/artist" class="btn btn-primary btn-xl text-uppercase" style="margin:auto">Sign Up</a>
+			</div>
+		</div>
+
+	</section>
+
+
+	{% include "shared/footer.html" %} {% endblock %}

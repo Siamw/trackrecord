@@ -1,0 +1,13 @@
+
+--Insert venue
+INSERT INTO public.venue(
+	venuetypes, acttypes, genrepreferences, website, name, "contactEmail", "phoneNumber", assets, "createTime", "updateTime", "createByUserID", "statusCode", twitter, instagram, equipment, "customerAge", capacity, payrate, "addressLine1", "addressLine2", city, region, "zipCode")
+	VALUES ('{restruant,club}','{solo,band}' ,'{POP,RAP}', 'http://hoon@blog.naver.com', 'hoon', 'hoon@gmail.com', '213-123-4567', '{0,1}', '2018-1-7'::timestamp, '2018-1-7'::timestamp, 0, 'Block', 'hoon@twitter.com', 'hoon@instagram.com', 'guitar', 'nineteen', 50, '(100,200)'::int4range, '2117', 'Irvine', 'CA', 'region', '96123');
+
+INSERT INTO public.venue(
+	venuetypes, acttypes, genrepreferences, website, name, "contactEmail", "phoneNumber", assets, "createTime", "updateTime", "createByUserID", "statusCode", twitter, instagram, equipment, "customerAge", capacity, payrate, "addressLine1", "addressLine2", city, region, "zipCode")
+	VALUES ('{restruant,club}','{solo,band}' ,'{POP,RAP}', 'http://sdsd@blog.naver.com', 'hoon', 'sds@gmail.com', '223-123-4567', '{0,1}', '2018-1-7'::timestamp, '2018-1-7'::timestamp, 0, 'Block', 'hoon@twitter.com', 'sss@instagram.com', 'guitar', 'nineteen', 50, '(100,200)'::int4range, '2232', 'Irvine', 'CA', 'region', '96123');
+
+
+--Insert artist
+insert into "artist" ("assets", "contactEmail", "createByUserID", "createTime", "dayAndNightTerm", "genres", "instagram", "name", "noticeTerm", "payrate", "phoneNumber", "twitter", "updateTime", "website") values ('{1,2,3}', '"email@gmial.com"', '4', CURRENT_TIMESTAMP, 'noticeTerm', '{1,2,3}', '"http://instagram.com"', '"test1"', 'noticeTerm', '[1000, 3000]', '"9492919473"', '"http://twitter.com"', CURRENT_TIMESTAMP, '"http://website.com"')

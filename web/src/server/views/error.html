@@ -1,0 +1,23 @@
+{% extends "shared/base.html" %}
+
+{% block title %}{% endblock %}
+
+
+{% block content %}
+<body>
+  	{% include "shared/navbar.html" %}
+  <section>
+  <div class="row">
+    <div class="col-md-12" style="text-align:center">
+        {% if message %}
+          <h1>{{message}}</h1>
+        {% endif %}
+        {% if error.status %}
+          <h2>{{error.status}}</h2>
+        {% endif %}
+    </div>
+  </div>
+</section>
+{% include "shared/footer.html" %}
+<body>
+{% endblock %}

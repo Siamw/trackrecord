@@ -1,0 +1,287 @@
+{% extends "shared/base.html" %}
+
+{% block title %}{% endblock %}
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+  
+    <script>
+         
+     {% if redirectUrlOnSuccess %}
+        var redirectOnSuccess = '{{redirectUrlOnSuccess }}';
+     {% else %}
+        var redirectOnSuccess = null;
+     {% endif %}
+
+     $(function (){
+      $('.phone_us').mask('(000) 000-0000');
+       $('#signUpProfileForm').validate({
+         errorClass: "is-invalid",
+         validClass: "is-valid",
+         errorPlacement: function(error,element){
+           error.addClass("invalid-feedback").insertAfter(element);
+         },
+         errorElement:"div",
+         rules: {
+           actType:{
+             required : true,
+           },
+           genres:{
+             required: true,
+           },
+           name:{
+             required: true,
+           },
+           zipCode:{
+             required: true,
+           },
+           phoneNumber:{
+             required: true,
+           },
+           youtube:{
+             required: true,
+           }
+         },
+         messages: {
+          actType: "act type needed",
+          genres: "genre needed",
+          name: {
+            required: "name needed"
+          },
+          zipCode: {
+            required: "zip code needed"
+          },
+          phoneNumber: {
+            required: "phone number needed"
+          },
+          youtube:{
+            required: "youtube video link needed"            
+          }
+         },
+
+         submitHandler: function(form){
+           jQuery.ajax({
+            type: "{{submitMethod}}",
+            contentType: "application/x-www-form-urlencoded",
+            dataType: "json",
+            url: "/api/artist",   // TODO : change this route to real uploading image page not test page
+            data: $('#signUpProfileForm').serializeObject(),
+            success: function(res){
+              if(redirectOnSuccess && redirectOnSuccess.length > 0){
+                location.href = redirectOnSuccess;
+                return;
+              }
+
+              if(res.data && res.data.redirectUrl)
+                location.href = res.data.redirectUrl;
+              else
+                location.href = '/';
+            },
+            error: function(err){
+              alert(err.responseJSON.message);
+            }
+          }); 
+         },
+         invalidHandler: function (event,validator){
+           var errors = validator.invalid;
+           if(Object.keys(errors).length!=0)
+           {
+            var html = "<div class='alert alert-danger'><strong>CHECK !</strong><ul>";
+            for (var i in Object.keys(errors)) {
+              html += (`<li>` + Object.keys(errors)[i])
+              console.log(html)
+           }
+           html += "</ul></div>"
+            $("#validateWarning").html(html);
+            $("#validateWarning").show();
+          } else {
+            $("#validateWarning").hide();
+          }
+         }
+       })
+     })  
+    </script>
+
+    {% include "shared/navbar.html" %}
+  <section>
+  <div class="container">
+
+    <form id="signUpProfileForm" class="main-center">
+      <h1>{{pageTitle}}</h1>
+
+
+        <div class="form-group clearfix">
+          <label for="actTypes[]">What type of act do you have?</label>
+          {%for item in appSetting.actTypes%}
+            <div class="form-check form-group-condensed">
+                <input class="form-check-input" type="checkbox" name="actTypes[]"  value="{{item}}" id="{{item}}"
+                {% for act in userInfo.actTypes %}
+                      {% if act == item %}  
+                        checked 
+                      {% endif %}
+                    {% endfor %}>
+                <label class="form-check-label" for="{{item}}">
+                    {{item}}
+                </label>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group clearfix">
+          <label for="genres[]">What genre of music do you play?</label>
+          {%for item in appSetting.genres%}
+            <div class="form-check form-group-condensed">
+                <input class="form-check-input" type="checkbox" name="genres[]"  value="{{item}}" id="{{item}}"
+                {% for genre in userInfo.genres %}
+                      {% if genre == item %}  
+                        checked 
+                      {% endif %}
+                    {% endfor %}>
+                <label class="form-check-label" for="{{item}}">
+                    {{item}}
+                </label>
+            </div>
+          {% endfor %}
+        </div>
+
+    
+        <div class="form-group">
+          <label for="name">What is the name of your act?</label>
+          <input type="text" maxlength="50" class="form-control" name="name" id="name" value="{{userInfo.name}}" required>
+        </div>
+
+        <div class="form-group clearfix">
+          <label >What payment types do you accept?</label>
+          {%for item in appSetting.paymentTypes%}
+            <div class="form-check form-group-condensed">
+                <input class="form-check-input" type="checkbox" name="paymentTypes[]"  value="{{item}}" id="{{item}}"
+                {% for paymentType in userInfo.paymentTypes %}
+                      {% if paymentType == item %}  
+                        checked 
+                      {% endif %}
+                    {% endfor %}>
+                <label class="form-check-label" for="{{item}}">
+                    {{item}}
+                </label>
+            </div>
+          {% endfor %}
+
+        </div>
+
+        <div class="form-group">
+            <label for="twitter" class="control-label">What is your minimum hourly payrate?</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">$</span>
+                <input type="text" maxlength="4" class="form-control" value="{{userInfo.minpayrate}}" placeholder="ex. 50" name="minpayrate" id="minpayrate">
+              </div>
+            </div>
+          </div>
+
+
+      <div class="form-check">
+          <input type="checkbox" value="true" class="form-check-input" name="over18" id="over18" {% if userInfo.over18 %} checked {% endif %}>
+        <label class="form-check-label" for="over18">Is everyone in your act at least 18?</label>
+      </div>
+
+        <div class="form-check">
+            <input type="checkbox" value="true" class="form-check-input" name="openMic" id="openMic" {% if userInfo.openMic %} checked {% endif %}>
+          <label class="form-check-label" for="openMic">Are you interested in Open Mics?</label>
+        </div>
+
+        <div class="form-check">
+            <input type="checkbox" value="true" class="form-check-input" name="canTravel" if="canTravel"{% if userInfo.canTravel %} checked {% endif %}>  
+          <label class="form-check-label" for="canTravel">Can you travel for work?</label>
+        </div>
+        <br/>
+        <div class="form-group">
+          <label for="contactEmail">What is your contact email?</label>
+          <input type="email" class="form-control" name="contactEmail" class="form-control" id="contactEmail" value="{{userInfo.contactEmail}}" placeholder="ex example@gmail.com" required>
+        </div>
+
+      <div class="form-group">
+          <label for="zipCode">What is your zipcode?</label>
+          <input type="text" maxlength="5" class="form-control" name="zipCode" value="{{userInfo.zipCode}}" placeholder="ex. 92604" required>
+        </div>
+
+      <div class="form-group">
+          <label for="phoneNumber">Contact Phone Number</label>
+          <input type="text" maxlength="12" class="form-control phone_us" id="phoneNumber" name="phoneNumber" value="{{userInfo.phoneNumber}}" placeholder="ex: 000-000-0000" required>
+        </div>
+        <div class="form-group">
+          <label for="website">Website</label>
+          <input type="text" class="form-control" placeholder="ex. http://www.site.com" name="website" id="website" value="{{userInfo.website}}">
+        </div>
+
+
+      <div class="form-group">
+        <label for="twitter" class="control-label">Twitter Username</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">@</span>
+            <input type="text" maxlength="20" class="form-control" value="{{userInfo.twitter}}" placeholder="username" name="twitter" id="twitter">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+          <label for="instagram" class="control-label">Instagram Username</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">@</span>
+              <input type="text" maxlength="20" class="form-control" value="{{userInfo.instagram}}" placeholder="username" name="instagram" id="instagram">
+            </div> 
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label class="control-label">Sound Cloud Username</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">@</span>
+              <input type="text" maxlength="20" class="form-control" value="{{userInfo.soundcloud}}" placeholder="username" name="soundcloud" id="soundcloud">
+            </div> 
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label for="youtube" class="control-label">Promotional Youtube Video Link</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">https://www.youtube.com/embed/</span>
+                <input type="text" maxlength="10" class="form-control" value="{{userInfo.youtube}}" placeholder="VIDEO_ID" name="youtube" id="youtube" required>
+              </div>
+            </div>
+          </div>
+
+      <div class="form-group">
+          <label for="description">List your previous venues/or events you preformed</label>
+          <textarea id="description" placeholder="ex. 1. The pantages (Nov 29, 2016)" class="form-control" cols="40" rows ="5" name="description">{{userInfo.description}}</textarea>
+        </div>
+      <!--I'm not sure how to add picture and connect with database-->
+      <!--Have to make ... can add more images-->
+      <!--form use Korean,,,-->
+       <input type="hidden" value={{userInfo.artistID}} name="artistID" />
+   
+          <!--validate warning list-->
+          <div id="validateWarning"> </div>
+
+      <button id="finishSignupbtn" type="submit" class="btn btn-primary">Next > </button>
+
+
+  </form>
+  </div>
+</section>
+{% include "shared/footer.html" %}
+</body>
+  {% endblock %}
+
+  {% block scripts %}
+
+  {% endblock %}

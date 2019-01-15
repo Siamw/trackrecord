@@ -1,0 +1,416 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Venue{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css" integrity="sha256-WfuSLYdzGvlsFU6ImYYSE277WsjfyU30QeGuNIjeJEI=" crossorigin="anonymous" />
+   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js" integrity="sha256-ssw743RfM8cbNhwou26tmmPhiNhq3buUbRG/RevtfG4=" crossorigin="anonymous"></script>    
+  
+    <script>
+
+     {% if redirectUrlOnSuccess %}
+        var redirectOnSuccess = '{{redirectUrlOnSuccess }}';
+     {% else %}
+        var redirectOnSuccess = null;
+     {% endif %}
+
+     $(function (){
+      $('.phone_us').mask('(000) 000-0000');
+      $('input#payrate').change(function(e){
+        var rangeValue = $(this).attr("data-value").split(",");
+        $('.slider-value:first').text(rangeValue[0]);
+        $('.slider-value:last').text(rangeValue[1]);
+      })
+       $('#signUpProfileForm').validate({
+         errorClass: "is-invalid",
+         validClass: "is-valid",
+         errorPlacement: function(error,element){
+           error.addClass("invalid-feedback").insertAfter(element);
+         },
+         errorElement:"div",
+         rules: {
+           name:{
+             required: true,
+           },
+           actTypes:{
+             required : true,
+           },
+           venueTypes:{
+             required: true,
+           },
+           genrePreferences:{
+             required: true,
+           },
+           contactEmail:{
+             required: true,
+           },
+           paymentTypes:{
+             required: true,
+           },
+           phoneNumber:{
+             required: true,
+           },
+           customerAge:{
+             required: true,
+           },
+           payrate:{
+             required: true,
+           },
+           capacity:{
+             required: true,
+           },
+           addressLine1:{
+             required: true,
+           },
+           addressLine2:{
+             required: false,
+           },
+           city:{
+             required: true,
+           },
+           region:{
+             required: true,
+           },
+           zipCode:{
+             required: true,
+           },
+           /*openmic:{
+             required: true,
+           },*/
+         },
+         messages: {
+            name:{
+             required: "Please enter a name",
+           },
+           actTypes:{
+             required : "Please select at least one",
+           },
+           venueTypes:{
+             required: "Please select a venue type",
+           },
+           genrePreferences:{
+             required: "genre preferences needed",
+           },
+           contactEmail:{
+             required: "Please enter a contact email",
+           },
+           paymentTypes:{
+             required: "Please select at least one",
+           },
+           phoneNumber:{
+             required: "required",
+           },
+           customerAge:{
+             required: "Please select an age requirement",
+           },
+           payrate:{
+             required: "required",
+           },
+           capacity:{
+             required: "required",
+           },
+           addressLine1:{
+             required: "required",
+           },
+           city:{
+             required: "required",
+           },
+           region:{
+             required: "required",
+           },
+           zipCode:{
+             required: "required",
+           },
+         },
+
+         submitHandler: function(form){
+           jQuery.ajax({
+             type: "{{submitMethod}}",
+             contentType: "application/x-www-form-urlencoded",
+             dataType: "json",
+             url: "/api/venue",
+             data: $('#signUpProfileForm').serializeObject(),
+            success: function(res){
+              if(redirectOnSuccess && redirectOnSuccess.length > 0){
+                location.href = redirectOnSuccess;
+                return;
+              }
+
+              if(res.data && res.data.redirectUrl){
+                location.href = res.data.redirectUrl;
+              }
+              else
+                location.href = '/';
+            },
+             error: function (err) {
+               alert(err.responseJSON.message);
+             }
+           });
+        },
+         invalidHandler: function (event,validator){
+           var errors = validator.invalid;
+           if(Object.keys(errors).length!=0)
+           {
+            var html = "<div class='alert alert-danger'><strong>CHECK !</strong><ul>";
+            for (var i in Object.keys(errors)) {
+              html += (`<li>` + Object.keys(errors)[i])
+              console.log(html)
+           }
+           html += "</ul></div>"
+            $("#validateWarning").html(html);
+            $("#validateWarning").show();
+          } else {
+            $("#validateWarning").hide();
+          }
+         }
+       }) 
+    })
+    </script>
+
+
+
+
+
+    {% include "shared/navbar.html" %}
+
+    <section>
+  <div class="container">
+
+    <form id="signUpProfileForm" class="main-center">
+      <h1>{{pageTitle}}</h1>
+
+      <div class="form-group">
+          <label for="venueTypes[]">Please choose your venue type</label>
+          <select name="venueTypes[]" class="form-control" id="venueTypes[]">
+            <option value=''>Choose venue type</option>
+            {%for item in appSetting.venueTypes%}
+            <option  value="{{item}}" {% for venueType in userInfo.venueTypes %}
+                        {% if venueType == item %}  
+                          selected 
+                        {% endif %}
+                      {% endfor %}>{{item}}</option>
+            {% endfor %}
+          </select>
+
+        </div>        
+
+        <div class="form-group clearfix">
+          <label for="actTypes[]">Please choose the type of acts you want</label>
+          {%for item in appSetting.actTypes%}
+            <div class="form-check form-group-condensed">
+                <input class="form-check-input" type="checkbox" name="actTypes[]"  value="{{item}}" id="{{item}}"
+                {% for act in userInfo.actTypes %}
+                      {% if act == item %}  
+                        checked 
+                      {% endif %}
+                    {% endfor %}>
+                <label class="form-check-label" for="{{item}}">
+                    {{item}}
+                </label>
+            </div>
+          {% endfor %}
+
+        </div>
+
+
+          <div class="form-group clearfix">
+            <label for="genrePreferences">Please choose the genres you want the acts to play</label>
+            {%for item in appSetting.genres%}
+              <div class="form-check form-group-condensed">
+                  <input class="form-check-input" type="checkbox" name="genrePreferences"  value="{{item}}" id="{{item}}"
+                  {% for genre in userInfo.genrePreferences %}
+                        {% if genre == item %}  
+                          checked 
+                        {% endif %}
+                      {% endfor %}>
+                  <label class="form-check-label" for="{{item}}">
+                      {{item}}
+                  </label>
+              </div>
+            {% endfor %}
+          </div>
+
+    
+        <div class="form-group">
+          <label for="name">What is the name of your venue?</label>
+          <input type="text" maxlength="50" class="form-control" name="name" id="name" value="{{userInfo.name}}" required>
+        </div>
+
+        <div class="form-group clearfix">
+          <label >What payment types do you provide?</label>
+          {%for item in appSetting.paymentTypes%}
+            <div class="form-check form-group-condensed">
+                <input class="form-check-input" type="checkbox" name="paymentTypes[]"  value="{{item}}" id="{{item}}"
+                {% for paymentType in userInfo.paymentTypes %}
+                  {% if paymentType == item %}  
+                    checked 
+                  {% endif %}
+                {% endfor %}>
+                <label class="form-check-label" for="{{item}}">
+                    {{item}}
+                </label>
+            </div>
+          {% endfor %}
+
+        </div>
+
+        <div class="form-group">
+            <label for="payrate" class="control-label">Your min and max hourly pay rate</label><br/>          
+            <b class="slider-value" style='min-width:20px;display:inline-block'>0</b> 
+            <input
+              id="payrate"
+              class="span2"
+              type="text"
+              name="payrate"
+              data-provide="slider"
+              data-slider-min="{{appSetting.payrate.min}}"
+              data-slider-max="{{appSetting.payrate.max}}"
+              data-slider-step="{{appSetting.payrate.steps}}"
+              data-slider-value="[{% if userInfo.payrate !== null %}{{userInfo.payrate}}{% else %}{{appSetting.payrate.value}}{% endif %}]"
+              data-slider-range="true"
+              data-slider-tooltip="show"
+              data-slider-tooltip-split="true"
+              data-slider-tooltip-position="top"
+            />
+            <b class="slider-value" style='margin-left:8px;display:inline-block'>100</b>                
+          </div>
+
+          <div class="form-group">
+              <label for="customerAge">Choose your venue's age requirements</label>
+              <select name="customerAge" class="form-control" id="customerAge">
+              <option value=''>Choose minimun age</option>
+              {%for item in appSetting.ageRequirements%}         
+              <option  value="{{item}}" {% for age in userInfo.customerAge %}
+                        {% if age == item %}  
+                          selected 
+                        {% endif %}
+                      {% endfor %}>{{item}}</option>
+              {% endfor %}
+              </select>
+          </div>
+
+      
+
+
+
+
+<!--
+        <div class="form-check">
+            <input type="checkbox" value="true" class="form-check-input" name="openMic" id="openMic" {% if userInfo.openMic %} checked {% endif %}>
+          <label class="form-check-label" for="openMic">Are you interested in Open Mics?</label>
+        </div>
+-->
+        <div class="form-group">
+          <label for="contactEmail">What is your contact email?</label>
+          <input type="email" class="form-control" name="contactEmail" class="form-control" id="contactEmail" value="{{userInfo.contactEmail}}" placeholder="" required>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="addressLine1">What is the address of your venue?</label>
+            <input type="text" maxlength="40" class="form-control" name="addressLine1" value="{{userInfo.addressLine1}}" placeholder="address line 1" required>  
+          </div>
+          <div class="form-group">
+              <input type="text" maxlength="40" class="form-control" name="addressLine2" value="{{userInfo.addressLine2}}" placeholder="address line 2">
+          </div>
+          <div class="form-group">
+              <input type="text" maxlength="60" class="form-control" name="city" value="{{userInfo.city}}" placeholder="City" required>   
+          </div>
+          <div class="form-group">
+              <select name="region" class="form-control" id="region">
+                  <option value=''>Choose state</option>
+                  {%for item in appSetting.states%}
+                    <option  value="{{item}}" {% if userInfo.region == item %} selected {% endif %}>
+                    {{item}}
+                    </option> 
+                  {% endfor %}
+                  </select>
+
+          </div>
+          <div class="form-group">
+              <input type="text" maxlength="5" class="form-control" name="zipCode" value="{{userInfo.zipCode}}" placeholder="Zipcode" required>
+            
+          </div>
+         
+
+
+          <div class="form-group">
+            <label for="capacity">Capacity</label>
+            <input type="text" class="form-control" name="capacity" value="{{userInfo.capacity}}" placeholder="ex. 1000" required>
+          </div>
+
+          <div class="form-check">
+            <input type="checkbox" value="true" class="form-check-input" name="stageElevated" id="stageElevated" {% if userInfo.stageElevated %} checked {% endif %}>
+            <label class="form-check-label" for="stageElevated">Is your stage elevated?</label><!--customer average age-->
+        </div>
+
+          <div class="form-check">
+            <input type="checkbox" value="true" class="form-check-input" name="equipment" id="equipment" {% if userInfo.equipment %} checked {% endif %}>
+          <label class="form-check-label" for="equipment">Can you provide equipment to the artist?</label>
+        </div>
+      </br>
+
+      <div class="form-group">
+          <label for="phoneNumber">Contact Phone Number</label>
+          <input type="text" maxlength="12" class="form-control phone_us" id="phoneNumber" name="phoneNumber" value="{{userInfo.phoneNumber}}" placeholder="ex: 000-000-0000" required>
+        </div>
+        <div class="form-group">
+          <label for="website">Website</label>
+          <input type="text" class="form-control" placeholder="ex. http://www.site.com" name="website" id="website" value="{{userInfo.website}}">
+        </div>
+
+
+      <div class="form-group">
+        <label for="twitter" class="control-label">Twitter Username</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">@</span>
+            <input type="text" maxlength="20" class="form-control" value="{{userInfo.twitter}}" placeholder="" name="twitter" id="twitter">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+          <label for="instagram" class="control-label">Instagram Username</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">@</span>
+              <input type="text" maxlength="20" class="form-control" value="{{userInfo.instagram}}" placeholder="" name="instagram" id="instagram">
+            </div> 
+          </div>
+        </div>
+
+
+      <div class="form-group">
+          <label for="description">Describe about your venue</label>
+          <textarea id="description" placeholder="ex. 1. The pantages (Nov 29, 2016)" class="form-control" cols="40" rows ="5" name="description">{{userInfo.description}}</textarea>
+        </div>
+
+
+       <input type="hidden" value={{userInfo.venueID}} name="venueID" />
+   
+          <!--validate warning list-->
+          <div id="validateWarning"> </div>
+
+      <button id="finishSignupbtn" type="submit" class="btn btn-primary">Next > </button>
+
+
+  </form>
+  </div>
+</section>
+{% include "shared/footer.html" %}
+</body>
+  {% endblock %}
+
+  {% block scripts %}
+
+  {% endblock %}

@@ -1,0 +1,23 @@
+
+{% extends "shared/base.html" %} {% block title %}{% endblock %} 
+
+    {% block content %}
+    <body>
+        <section>
+    <div class="container" style="text-align:center">
+        <h2 >Please Confirm Email</h2>
+
+        <p >We've just you an email to your address : <b>{{user.email}}</b></p><!--user email here-->
+        <p >Please check your email and click on the link provided to verify your address.</p>
+
+        <!--<button type="button" class="btn btn-normal" > Resend Email Verification</button>-->
+        <button type="button" class="btn btn-success" onclick="location.href='/''">Continue to Site > </button>
+     
+    </div>
+
+
+</section>
+{% include "shared/footer.html" %}
+    </body>
+{% endblock %}
+

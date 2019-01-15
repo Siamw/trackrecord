@@ -1,0 +1,41 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Artist List - Admin{% endblock %}
+
+{% block content %}
+
+<body id="page-top">
+    {% include "shared/navbar.html" %}
+    <section>
+        <div class="container">
+            <table class="table table-responsive-md">
+                <thead class="mdb-color lighten-4 thead-inverse">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>E-mail</th>
+                        <th>Phone</th>
+                    </tr>  
+                </thead>
+
+                <tbody>
+                    {%for item in artists%} 
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td><a href="/admin/artist/{{item.artistID}}">{{item.name}}</a></td>
+                        <td>{{item.contactEmail}}</td>
+                        <td>{{item.phoneNumber}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>	
+    {% include "shared/footer.html" %}
+ </body>
+
+
+{% endblock %}
+
+
+

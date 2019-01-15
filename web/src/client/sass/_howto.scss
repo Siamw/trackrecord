@@ -1,0 +1,19 @@
+.howToStep {
+	text-align:left;
+	height:350px; 
+	img {
+	  margin-bottom:35px;
+	  height:80px
+	}
+	.howToStep-title {
+	  color:#FFF
+	}
+  }
+
+
+@media (min-width: 300px) {
+	.howToStep {
+	  text-align:center;
+	  height:300px; 
+	}
+  }

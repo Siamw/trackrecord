@@ -1,0 +1,65 @@
+{% extends "shared/base.html" %}
+
+{% block title %}Venue Information{% endblock %}
+
+{% block content %}
+<body>
+    {% include "shared/navbar.html" %}
+    <section>
+        <div class="container">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 text-center">
+                            {% if venue.assets.length > 0 %}
+                            <img alt="" 
+                                class="rounded-circle img-responsive" 
+                                style="width:200px;height:200px;background-position: center;
+                                background-size: cover;
+                                background-image: url('{{venue.assets[0].url}}');"> 
+                            {% else %}
+                                <img src="/img/default_profile_image.png" alt="" class="center-block img-circle img-responsive"> 
+                            {% endif %}
+                            <br><br>
+                            <h2>{{venue.name}}</h2><br>
+                            <a href="https://{{venue.website}}">
+                                <i style="color:white" class="fa fa-globe fa-2x"></i>
+                            </a> 
+                            <a href="mailto:{{venue.contactEmail}}">
+                                <i style="color:white" class="fa fa-envelope fa-2x"></i>
+                            </a>   
+                            <p>  <i style="color:white" class="fa fa-phone"> </i><span class="label label-info tags">&nbsp; {{venue.phoneNumber}}</span> </p> 
+                       
+                        </div>
+
+
+                        <!--/col-->
+                        <div class="col-xs-12 col-sm-8" >
+                        <p><span class="label label-info tags">{{venue.description}} </span> </p>
+                           
+                        <div style="width:77%; height: 350px; padding: 20px; border: 1px solid gray;">
+                        
+                            <p> <strong>Venue Types: </strong> <span class="label label-info tags">{{venue.venueTypes}} </span> </p>
+                            <p> <strong>Act Typess: </strong> <span class="label label-info tags"> {{venue.actTypes}} </span> </p>
+                            <p> <strong>Genre Preferences: </strong> <span class="label label-info tags"> {{venue.genrePreferences}} </span> </p>
+                            <p> <strong>Customer Age:  </strong> <span class="label label-info tags">{{venue.customerAge}}</span> </p>
+                            <p> <strong>Capacity: </strong> <span class="label label-info tags">{{venue.capacity}} </span> </p>
+                            <p> <strong>Location: </strong> <span class="label label-info tags">{{venue.addressLine1}} {{venue.addressLine2}}, {{venue.city}} {{venue.region}}</span> </p>
+
+                        </div>
+                    </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <!--/row-->
+                </div>
+                <!--/panel-body-->
+            </div>
+            <!--/panel-->
+
+        </div>
+    </section>
+    {% include "shared/footer.html" %}
+</body>
+{% endblock %}

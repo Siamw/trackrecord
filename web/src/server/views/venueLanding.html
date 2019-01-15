@@ -1,0 +1,86 @@
+ {% extends "shared/base.html" %} {% block title %}Main{% endblock %} {% block content %}
+
+<body id="page-top">
+	{% include "shared/navbar.html" %}
+
+
+
+	<header class="masthead masthead-venue">
+		<div class="container">
+			<div class="intro-text" style="text-align:center">
+				<div class="intro-lead-in text-uppercase">For Venues</div>
+				<div class="intro-heading text-uppercase">Get vetted musical artists for your venue or event</div>
+				<div class="intro-desc" style="max-width:600px;text-align:center;margin:auto;margin-bottom:40px;">Serving Los Angeles and Orange County
+				</div>
+				<a class="btn btn-primary btn-xl text-uppercase " href="/signup/venue">Sign Up</a>
+			</div>
+		</div>
+	</header>
+	<section style="background-color:#191B1C">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2">
+
+				</div>
+				<div class="col-md-8 text-center">
+					<h2 class="section-heading">We make it quick and easy to hire right artist</h2>
+					<p class="text-muted">Half the battle of providing live entertainment is booking acts that are a good fit for your venue. We have a database full of different types of musical artists with their pricing and fanbase size within your local area. Based on your budget and goals for your business, we will provide the right artist for you.						</p>
+					<a href="/signup/venue" class="btn btn-primary btn-xl text-uppercase">Sign Up</a>
+				</div>
+				<div class="col-md-2">
+
+				</div>
+			</div>
+			<div class="row" style="margin-bottom:48px;margin-top:80px">
+					<h2 class="section-heading" style="margin: auto;">How it Works?</h2>
+			</div>
+			<div class="row">
+			{% for step in info.howToSteps %}				
+				<div class="col-md-3">
+					<div class="howToStep">
+						<img src="{{step.imagePath}}"/>
+						<h5 class="howToStep-title">{{ step.title }}</h5>
+						<ul class="list-unstyled howToStep-reasons">
+							{% for reason in step.reasons %}	
+							<li>{{ reason }}</li>
+							{%endfor%}
+						</ul>
+
+					</div>
+				</div>
+			{%endfor%}
+
+			</div>
+			<div class="row" style="margin-top:80px">
+					<div class="col-md-2">
+
+						</div>
+						<div class="col-md-8 text-center">
+								<ul class="list-unstyled" style="margin:auto;margin-bottom:48px;font-size:32px;text-align:center;">
+										<li>Need more customers?</li>
+										<li>Want a great performer?</li>
+										<li>Want to set a vibe?</li>
+				
+								</ul>
+			
+								<p>
+										Let us provide the entertainment. We have a database full of different types of musical artist with their pricing and size of fan base within your local area. Based on your budget and goals for your business, we will provide the right artist.
+			
+								</p>
+						</div>
+						<div class="col-md-2">
+		
+					</div>
+
+
+			</div>
+			<div class="row" style="text-align:center;margin-top:20px;">
+
+					<a href="/signup/venue" class="btn btn-primary btn-xl text-uppercase" style="margin:auto">Sign Up</a>
+			</div>
+		</div>
+
+	</section>
+
+
+	{% include "shared/footer.html" %} {% endblock %}

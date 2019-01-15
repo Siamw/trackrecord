@@ -1,0 +1,160 @@
+{% extends "shared/base.html" %} {% block title %}{% endblock %} {% block content %}
+
+<body>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+ 
+ 
+  <script>
+    $(function () {
+      $('#registerForm').validate({
+        errorClass: "is-invalid",
+        validClass: "is-valid",
+        errorPlacement: function(error, element) {
+          error.addClass("invalid-feedback").insertAfter(element);
+        },
+        errorElement: "div",
+            rules :{
+                username:{required : true,},
+                email:{required : true, email : true},
+                password:{required : true,},
+                pswrepeat : {
+                  required : true,
+                  equalTo : "#password"}
+                },
+               messages:{username : "name needed",
+                          email : {required : "email needed",email : "It has to be an email"},
+                          password : {required : "password needed"},
+                          pswrepeat : {required : "password needed", equalTo : "password need to be same"},
+                },
+                submitHandler: function(form) {
+                  // Validation Success Event
+                  // It will calls custom ajax POST function.
+                  console.log("Validating Success");
+                  jQuery.ajax({
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    url: "/auth/register", // have to change
+                    dataType: 'json',
+                    data: $("#registerForm").serializeObject(),
+                    success: function (res) {
+                      console.log("success")
+                      location.href = res.data.redirectUrl;
+                    },
+                    error: function (err) {
+                      console.log(err)
+                      alert(err.responseJSON.message);
+                    }
+                  });
+                },
+                invalidHandler: function(event, validator) {
+                  // Validation Fail Event
+                  // 'this' refers to the form
+                  console.log("Validating Error!!");
+                  var errors = validator.invalid;
+                  console.log(errors);//{username: "name needed", email: "email needed", password: "password needed", pswrepeat: "password needed"}
+                  if (Object.keys(errors).length!=0) {
+                    var html = "<div class='alert alert-danger'><strong>CHECK !</strong><ul>";
+                      for(var i in Object.keys(errors))
+                      {                           
+                                  html += (`<li>`+ Object.keys(errors)[i])
+                                  console.log(html)
+                                
+                      }
+                      html += "</ul></div>"
+                      $("#validateWarning").append(html);
+                    $("#validateWarning").show();
+                  } else {
+                    $("#validateWarning").hide();
+                  }
+                } 
+        })
+    });
+  </script>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand " href="/"><img style="height:0.8em" src="/img/Logo.svg" title="Track Record"></a>
+    </div>
+    <span class="navbar-text">
+        Have Account? <a href="/login">Login</a>
+      </span>
+
+  </nav>
+  <section>
+    <div class="container">
+      <div class="row">
+          
+        <div class="main-center">
+     
+          <form id="registerForm" method="POST">
+              <div class="form-group">
+              <h4>
+                {% if roleID === null %}
+                  Sign Up
+                {% elif roleID === appSetting.roles.venueID %}
+                  Venue Sign Up
+                {% elif roleID === appSetting.roles.artistID %}
+                  Artist Sign Up
+                {% endif %}
+              </h4>  
+              </div>
+              
+              <div class="form-group">
+              <label for "username">Username</label>
+              <input type="text" class="form-control" aria-describedby="inputGroupPrepend3" id="username" placeholder="Name" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="text" class="form-control" id="email" placeholder="email@example.com" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password" required>
+            </div>
+            <div class="form-group">
+              <label for="pswrepeat">Repeat Password</label>
+              <input type="password" class="form-control" id="pswrepeat" placeholder="Repeat Password" name="pswrepeat" required>
+            </div>
+            {% if roleID == null %}
+            <div class="form-group">
+
+              <label>What are you signup for?</label>
+              <div class="radioboxes">
+                <input type="radio" id="venueType" name="roleID" checked="checked" value="1" />
+                <label for="venueType">Venue </label>
+                <input type="radio" id="artistType" name="roleID" value="2" />
+                <label for="artistType">Artist </label>
+              </div>
+
+            </div>
+            {% else %}
+              <input type="hidden" id="artistType" name="roleID" value="{{roleID}}" />
+            {% endif %}
+            <!-- I am not a robot -->
+            <!--<div class="g-recaptcha" data-sitekey="6LeAtD8UAAAAAJumVl2C3Ibx-Kc7CMuyWPfwcWVM"></div>-->
+          
+          
+            <!--validate warning list-->
+            <div id = "validateWarning"> </div>
+           
+           
+            <div class="form-group">
+              <p>Yes, I understand and agree to the
+                <a href="#">TrackRecord Terms of Service</a>, including the
+                <a href="#">User Agreement</a> and
+                <a href="#">Privacy Policy</a>.</p>
+
+              <button id="submitButton" type="submit" class="btn btn-primary">Signup</button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </section>
+  {% include "shared/footer.html" %}
+</body>
+{% endblock %}
